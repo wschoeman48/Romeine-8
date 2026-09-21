@@ -1,1 +1,639 @@
+<!DOCTYPE html>
+<html lang="af">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#101820" />
 
+  <title>Romeine 8:1–2 | Leer deur Scroll</title>
+
+  <style>
+    :root{
+      --bg:#0d1117;
+      --panel:#161b22;
+      --panel2:#1f2630;
+      --text:#f2f4f7;
+      --muted:#aab4c0;
+      --line:#30363d;
+      --accent:#f0b429;
+      --accent2:#4da3ff;
+      --good:#3fb950;
+      --bad:#f85149;
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Arial,Helvetica,sans-serif;
+      line-height:1.6;
+    }
+
+    .container{
+      width:min(760px,100%);
+      margin:0 auto;
+      padding:18px;
+    }
+
+    .hero{
+      min-height:72vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      padding:32px 12px;
+    }
+
+    .eyebrow{
+      color:var(--accent);
+      font-size:.85rem;
+      font-weight:700;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+
+    h1{
+      font-size:clamp(2rem,8vw,4rem);
+      line-height:1.05;
+      margin:10px 0 12px;
+    }
+
+    .lead{
+      color:var(--muted);
+      font-size:1.08rem;
+      max-width:560px;
+    }
+
+    .scroll-cue{
+      margin-top:30px;
+      color:var(--accent);
+      font-weight:700;
+      animation:bob 1.6s infinite ease-in-out;
+    }
+
+    @keyframes bob{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(8px)}
+    }
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:22px;
+      margin:22px 0;
+    }
+
+    .verse-number{
+      color:var(--accent);
+      font-weight:700;
+      font-size:.85rem;
+      margin-bottom:8px;
+    }
+
+    .verse{
+      font-size:1.4rem;
+      line-height:1.75;
+      margin:0;
+    }
+
+    .key{
+      color:var(--accent);
+      font-weight:800;
+    }
+
+    .step-title{
+      font-size:.84rem;
+      color:var(--muted);
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      margin-bottom:8px;
+    }
+
+    .big-idea{
+      font-size:1.8rem;
+      line-height:1.2;
+      font-weight:800;
+      text-align:center;
+      padding:18px 8px;
+    }
+
+    .arrow{
+      text-align:center;
+      font-size:2rem;
+      color:var(--muted);
+      margin:8px 0;
+    }
+
+    .because{
+      text-align:center;
+      display:inline-block;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:8px 18px;
+      font-weight:800;
+      margin:4px auto;
+    }
+
+    .center{
+      text-align:center;
+    }
+
+    .btn{
+      width:100%;
+      border:none;
+      border-radius:14px;
+      padding:14px 18px;
+      font-size:1rem;
+      font-weight:800;
+      cursor:pointer;
+      margin-top:12px;
+      min-height:48px;
+    }
+
+    .btn-primary{
+      background:var(--accent);
+      color:#111;
+    }
+
+    .btn-secondary{
+      background:var(--panel2);
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+
+    .choices{
+      display:grid;
+      gap:12px;
+      margin-top:14px;
+    }
+
+    .choice{
+      background:var(--panel2);
+      color:var(--text);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      text-align:left;
+      font-size:1rem;
+      cursor:pointer;
+    }
+
+    .feedback{
+      margin-top:14px;
+      padding:12px;
+      border-radius:12px;
+      display:none;
+      font-weight:700;
+    }
+
+    .feedback.good{
+      display:block;
+      background:rgba(63,185,80,.14);
+      border:1px solid var(--good);
+      color:#bff3c5;
+    }
+
+    .feedback.bad{
+      display:block;
+      background:rgba(248,81,73,.12);
+      border:1px solid var(--bad);
+      color:#ffc3bf;
+    }
+
+    .missing{
+      color:var(--accent);
+      font-weight:800;
+      letter-spacing:.04em;
+    }
+
+    .answer{
+      display:none;
+      margin-top:14px;
+      padding:14px;
+      border:1px dashed var(--accent);
+      border-radius:12px;
+      color:var(--text);
+      background:rgba(240,180,41,.08);
+      font-weight:700;
+    }
+
+    .memory{
+      font-size:1.5rem;
+      text-align:center;
+      font-weight:800;
+      line-height:1.5;
+    }
+
+    .progress-wrap{
+      position:sticky;
+      top:0;
+      z-index:50;
+      background:rgba(13,17,23,.94);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+
+    .progress-inner{
+      width:min(760px,100%);
+      margin:0 auto;
+      padding:10px 18px;
+    }
+
+    .progress-bar{
+      height:7px;
+      background:var(--panel2);
+      border-radius:999px;
+      overflow:hidden;
+    }
+
+    .progress-fill{
+      height:100%;
+      width:0%;
+      background:var(--accent);
+      transition:width .2s ease;
+    }
+
+    .progress-labels{
+      display:flex;
+      justify-content:space-between;
+      gap:6px;
+      color:var(--muted);
+      font-size:.72rem;
+      margin-top:7px;
+    }
+
+    .section{
+      padding-top:16px;
+      scroll-margin-top:70px;
+    }
+
+    .final-box{
+      border:1px solid var(--accent);
+      background:rgba(240,180,41,.06);
+    }
+
+    .share{
+      background:#25D366;
+      color:#071b0c;
+    }
+
+    .small{
+      font-size:.9rem;
+      color:var(--muted);
+    }
+
+    .footer{
+      text-align:center;
+      color:var(--muted);
+      font-size:.8rem;
+      padding:30px 12px 50px;
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto}
+      .scroll-cue{animation:none}
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="progress-wrap">
+    <div class="progress-inner">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <div class="progress-labels">
+        <span>Lees</span>
+        <span>Verstaan</span>
+        <span>Onthou</span>
+        <span>Herroep</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+
+    <section class="hero">
+      <div class="eyebrow">Romeine 8:1–2</div>
+      <h1>Van veroordeling na vryheid</h1>
+
+      <p class="lead">
+        Scroll stadig af. Elke deel van die program help jou om die verse
+        eers te lees, dan te verstaan, dan te onthou en uiteindelik uit jou geheue te herroep.
+      </p>
+
+      <div class="scroll-cue">Scroll af ↓</div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <div class="step-title">Stap 1 · Lees</div>
+        <div class="verse-number">ROMEINE 8:1</div>
+
+        <p class="verse">
+          Daar is dan nou
+          <span class="key">geen veroordeling</span>
+          vir die wat in Christus Jesus is nie,
+          vir die wat nie na die vlees wandel nie,
+          maar na die Gees.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <div class="verse-number">ROMEINE 8:2</div>
+
+        <p class="verse">
+          Want die wet van die Gees van die lewe in Christus Jesus
+          het my
+          <span class="key">vrygemaak</span>
+          van die wet van die sonde en die dood.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <div class="step-title">Stap 2 · Verstaan Paulus se gedagtegang</div>
+
+        <div class="big-idea">
+          GEEN VEROORDELING
+        </div>
+
+        <div class="center small">
+          vir dié wat in Christus Jesus is
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <div class="center">
+          <span class="because">WANT</span>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <div class="big-idea">
+          DIE GEES HET MY VRYGEMAAK
+        </div>
+
+        <div class="center small">
+          van die wet van sonde en dood
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <div class="step-title">Stap 3 · Toets jou begrip</div>
+
+        <h2>
+          Wat is daar volgens vers 1 nou nie meer vir dié wat in Christus Jesus is nie?
+        </h2>
+
+        <div class="choices">
+          <button class="choice" data-answer="wrong">
+            Probleme
+          </button>
+
+          <button class="choice" data-answer="correct">
+            Veroordeling
+          </button>
+
+          <button class="choice" data-answer="wrong">
+            Versoeking
+          </button>
+        </div>
+
+        <div id="quizFeedback" class="feedback"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <div class="step-title">Stap 4 · Onthou vers 1</div>
+
+        <p class="verse">
+          Daar is dan nou
+          <span class="missing">_____ _____</span>
+          vir die wat in
+          <span class="missing">_____ _____</span>
+          is nie.
+        </p>
+
+        <button class="btn btn-primary" id="showVerse1">
+          Wys ontbrekende woorde
+        </button>
+
+        <div class="answer" id="verse1Answer">
+          geen veroordeling · Christus Jesus
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <div class="step-title">Stap 5 · Onthou vers 2</div>
+
+        <p class="verse">
+          Want die wet van die
+          <span class="missing">_____</span>
+          van die
+          <span class="missing">_____</span>
+          in Christus Jesus
+          het my
+          <span class="missing">_____</span>
+          van die wet van die sonde en die dood.
+        </p>
+
+        <button class="btn btn-primary" id="showVerse2">
+          Wys ontbrekende woorde
+        </button>
+
+        <div class="answer" id="verse2Answer">
+          Gees · lewe · vrygemaak
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card final-box">
+        <div class="step-title">Stap 6 · Herroep</div>
+
+        <h2 class="center">
+          Sê nou Romeine 8:1–2 hardop sonder om te kyk.
+        </h2>
+
+        <p class="small center">
+          Gebruik net hierdie geheue-anker:
+        </p>
+
+        <div class="memory">
+          GEEN VEROORDELING
+          <br>
+          ↓
+          <br>
+          WANT
+          <br>
+          ↓
+          <br>
+          VRYGEMAAK DEUR DIE GEES
+        </div>
+
+        <button class="btn btn-primary" id="showFullAnswer">
+          Kontroleer my antwoord
+        </button>
+
+        <div class="answer" id="fullAnswer">
+          <strong>Romeine 8:1</strong><br><br>
+          Daar is dan nou geen veroordeling vir die wat in Christus Jesus is nie,
+          vir die wat nie na die vlees wandel nie, maar na die Gees.
+          <br><br>
+
+          <strong>Romeine 8:2</strong><br><br>
+          Want die wet van die Gees van die lewe in Christus Jesus het my
+          vrygemaak van die wet van die sonde en die dood.
+        </div>
+
+        <button class="btn share" id="shareWhatsApp">
+          Deel op WhatsApp
+        </button>
+
+        <button class="btn btn-secondary" id="restart">
+          Begin weer
+        </button>
+      </div>
+    </section>
+
+    <div class="footer">
+      Romeine 8:1–2 · Leer deur herhaling en herroeping
+    </div>
+
+  </main>
+
+  <script>
+    const progressFill = document.getElementById("progressFill");
+
+    function updateProgress(){
+      const scrollTop =
+        document.documentElement.scrollTop || document.body.scrollTop;
+
+      const scrollHeight =
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight;
+
+      const progress =
+        scrollHeight > 0
+          ? Math.min(100, Math.max(0, (scrollTop / scrollHeight) * 100))
+          : 0;
+
+      progressFill.style.width = progress + "%";
+    }
+
+    window.addEventListener("scroll", updateProgress);
+    updateProgress();
+
+    const quizFeedback = document.getElementById("quizFeedback");
+    const choices = document.querySelectorAll(".choice");
+
+    choices.forEach(button => {
+      button.addEventListener("click", () => {
+        const answer = button.dataset.answer;
+
+        if(answer === "correct"){
+          quizFeedback.className = "feedback good";
+          quizFeedback.textContent =
+            "Korrek — die sleutelwoorde is: GEEN VEROORDELING.";
+        } else {
+          quizFeedback.className = "feedback bad";
+          quizFeedback.textContent =
+            "Nie heeltemal nie. Kyk weer na die kernwoorde van Romeine 8:1.";
+        }
+      });
+    });
+
+    function setupReveal(buttonId, answerId){
+      const button = document.getElementById(buttonId);
+      const answer = document.getElementById(answerId);
+
+      button.addEventListener("click", () => {
+        const isOpen = answer.style.display === "block";
+
+        if(isOpen){
+          answer.style.display = "none";
+          button.textContent = "Wys ontbrekende woorde";
+        } else {
+          answer.style.display = "block";
+          button.textContent = "Versteek woorde";
+        }
+      });
+    }
+
+    setupReveal("showVerse1", "verse1Answer");
+    setupReveal("showVerse2", "verse2Answer");
+
+    const showFullAnswer = document.getElementById("showFullAnswer");
+    const fullAnswer = document.getElementById("fullAnswer");
+
+    showFullAnswer.addEventListener("click", () => {
+      const isOpen = fullAnswer.style.display === "block";
+
+      if(isOpen){
+        fullAnswer.style.display = "none";
+        showFullAnswer.textContent = "Kontroleer my antwoord";
+      } else {
+        fullAnswer.style.display = "block";
+        showFullAnswer.textContent = "Versteek antwoord";
+      }
+    });
+
+    document.getElementById("restart").addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+      quizFeedback.className = "feedback";
+      quizFeedback.textContent = "";
+
+      document.getElementById("verse1Answer").style.display = "none";
+      document.getElementById("verse2Answer").style.display = "none";
+      fullAnswer.style.display = "none";
+
+      document.getElementById("showVerse1").textContent =
+        "Wys ontbrekende woorde";
+
+      document.getElementById("showVerse2").textContent =
+        "Wys ontbrekende woorde";
+
+      showFullAnswer.textContent =
+        "Kontroleer my antwoord";
+    });
+
+    document.getElementById("shareWhatsApp").addEventListener("click", () => {
+      const text =
+        "Leer Romeine 8:1–2 met hierdie eenvoudige scroll-program:\\n\\n" +
+        window.location.href;
+
+      const url =
+        "https://wa.me/?text=" + encodeURIComponent(text);
+
+      window.open(url, "_blank");
+    });
+  </script>
+
+</body>
+</html>
